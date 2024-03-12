@@ -17,15 +17,20 @@ def change_res(input, res):
         input_filetype = input.split(".")[-1]
 
         output = f"{input_filename}{res[1]}.{input_filetype}"
-
+    
         # The video object
         clip = VideoFileClip(input)
 
         # Resizing
         resized_clip = clip.resize(res)
-
-        # Writing new file
-        resized_clip.write_videofile(output)
+        
+        # Write to file based on video format
+        if input_filetype == "mov":
+            resized_clip.write_videofile(output, codec="libx264")   
+        elif input_filetype == "avi":
+            resized_clip.write_videofile(output, codec="png")
+        else:
+            resized_clip.write_videofile(output)         
 
         return output
 

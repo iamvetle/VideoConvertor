@@ -37,7 +37,6 @@ def main():
     parser.add_argument(
         "-r",
         "--resolution",
-        required=True,
         choices=["480", "720", "1080", "2160", "4k", "4320", "9k"],
         help="Choose a resolution to convert to",
     )
@@ -53,61 +52,26 @@ def main():
 
     # The resolution that is going to be converted to
     chosen_res = args.resolution
-    res = resolution_options(chosen_res)
+    
+    if chosen_res:
+        res = resolution_options(chosen_res)
 
     num_of_files = len(filepaths)
     print(f"Converting {num_of_files} files to {chosen_res}\n")
 
     for filepath in filepaths:
         try:
+            
 
-            resized_file = change_res(filepath, res)
-
-            change_codec(resized_file, output)
-
-
-            # print(resized_file)
-
-            # filename_raw_list = filepath.split(".")
-            # old_filetype = filename_raw_list[-1]
-            # filename = (filename_raw_list[-2]).split("\\")[1]
-            # new_filename = f"{filename}_modto{chosen_res}"
-            # output_file = f"{new_filename}.{filetype}"
-
-            # print("filepath", filename)
-
-            # print("Trying to convert video format..")
-
-
-            # new_file_path = f"{new_filename}.{filetype}"
-
-            # # Size for the video
-            # moviesize = res
-
-            # # The video object
-            # clip = VideoFileClip(new_file_path)
-
-            # print(f"Converting '{filename}.{old_filetype}' to {chosen_res}p resolution.")
-
-            # # ! There is a problem with codec with moviepy edior i dont know why
-
-            # # Resizing
-            # resized_clip = clip.resize(moviesize)
-
-            # # Writing new file
-            # resized_clip.write_videofile(output_file)
-
-            # print(
-            #     f"Video converted from '{new_filename}' to {chosen_res}p resolution.\n"
-            # )
-
-            # change_codec(filepath, output_file)
-
+            input_file = filepath
+            if chosen_res:
+                resized_file = change_res(filepath, res)
+                input_file = resized_file
+            
+            change_codec(input_file, output)
 
         except Exception as e:
             print(e)
-
-
 
 if __name__ == "__main__":
     main()
