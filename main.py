@@ -5,6 +5,8 @@ import argparse
 from change_codec import change_codec
 from change_res import change_res
 
+from strip_and_split_filepath import strip_and_split_filepath
+
 def main():
     parser = argparse.ArgumentParser(description="Process a file")
 
@@ -47,9 +49,6 @@ def main():
     # List of paths chosen
     filepaths = args.filepaths
 
-    # The output file path. Example: spiderman.mp4
-    output = args.output
-
     # The resolution that is going to be converted to
     chosen_res = args.resolution
     
@@ -57,21 +56,34 @@ def main():
         res = resolution_options(chosen_res)
 
     num_of_files = len(filepaths)
-    print(f"Converting {num_of_files} files to {chosen_res}\n")
+    print(f"Converting {num_of_files} files to {chosen_res}p\n")
 
     for filepath in filepaths:
         try:
             
-
+            # The output file path. Example: spiderman.mp4
+            output = args.output
+            
+            if not output:
+                input_filename, input_filetype = strip_and_split_filepath(filepath)
+                
+                if not chosen_res:
+                    output = f"{input_filename}copy.{input_filename}"
+                else:
+                    output = f"{input_filename}{chosen_res}copy.{input_filename}"
+                
             input_file = filepath
+            
+            # Resize if a resolution has been set
             if chosen_res:
-                resized_file = change_res(filepath, res)
+                resized_file = change_res(filepath, output, res)
                 input_file = resized_file
             
             change_codec(input_file, output)
 
         except Exception as e:
             print(e)
+            exit()
 
 if __name__ == "__main__":
     main()

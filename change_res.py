@@ -1,40 +1,61 @@
 from moviepy.editor import VideoFileClip
 
-def change_res(input, res):
-    
-    """
-     Resizes the video input to the desired resolution
+# Local
 
-     Args:
-        input: The input file to resize
-        res: The resolution to use. As a tuple (w, h)
-     """
+from strip_and_split_filepath import strip_and_split_filepath
+
+def change_res(input, output, res):
+    """
+    Resizes the video input to the desired resolution
+
+    Args:
+       input: The input file to resize
+       output: The output file path 
+       res: The resolution to use. As a tuple (w, h)
+       
+    Return: it returns the path to the place the write file is
+    """
 
     print("Trying to resize video..")
+    
+    if not res:
+        print("No resolution specified")
+        exit()
 
     try:
-        input_filename = (input.split(".")[-2]).split("\\")[1]
-        input_filetype = input.split(".")[-1]
+        
+        input_filename, input_filetype = strip_and_split_filepath(input)
+        
+        print(input_filename)
+        print(input_filetype)
+        
+        output_filename, _ = strip_and_split_filepath(output)
+        
+        output_file = f"{output_filename}{res[1]}.{input_filetype}"
+        
+        print(output_filename)
 
-        output = f"{input_filename}{res[1]}.{input_filetype}"
-    
         # The video object
         clip = VideoFileClip(input)
 
         # Resizing
         resized_clip = clip.resize(res)
-        
+
+
         # Write to file based on video format
         if input_filetype == "mov":
-            resized_clip.write_videofile(output, codec="libx264")   
+            resized_clip.write_videofile(output_file, codec="libx264")
         elif input_filetype == "avi":
-            resized_clip.write_videofile(output, codec="png")
+            resized_clip.write_videofile(output_file, codec="png")
         elif input_filetype == "ogv":
-            resized_clip.write_videofile(output, code="libvorbis")
+            resized_clip.write_videofile(output_file, codec="libvorbis")
+        elif input_filetype == "webm":
+            resized_clip.write_videofile(output_file, codec="libvpx")
         else:
-            resized_clip.write_videofile(output)         
+            resized_clip.write_videofile(output_file)
 
-        return output
+        return output_file
 
     except Exception as e:
         print("An error eccured while trying to change resolution:", e)
+        exit()

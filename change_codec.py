@@ -27,3 +27,4 @@ def change_codec(input_file, output):
         # Execute the ffmpeg command using subprocess
     except Exception as e:
         print(f"An error occured while trying to convert the file\n", e)
+        exit()

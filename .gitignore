@@ -162,10 +162,13 @@ cython_debug/
 
 # Other
 
-### Music video formats
+### Video formats
 *.mp4
-*.mp3
 *.webm
 *.webp
 *.avi
 *.mov
+*.mkv
+
+### Music formats
+*.mp3
