@@ -21,7 +21,6 @@ def change_res(input, output, res):
     if not res:
         print("No resolution specified")
         exit()
-
     try:
         
         input_filename, input_filetype = strip_and_split_filepath(input)
@@ -31,7 +30,7 @@ def change_res(input, output, res):
         
         output_filename, _ = strip_and_split_filepath(output)
         
-        output_file = f"{output_filename}{res[1]}.{input_filetype}"
+        output_file = f"{output_filename}resized_to_{res[1]}.{input_filetype}"
         
         print(output_filename)
 
@@ -54,6 +53,7 @@ def change_res(input, output, res):
         else:
             resized_clip.write_videofile(output_file)
 
+        print(f"{input_filename} resized to {res[1]}p")
         return output_file
 
     except Exception as e:

@@ -1,4 +1,4 @@
-def strip_and_split_filepath (filepath):
+def strip_and_split_filepath (filepath: str) -> tuple[str, str]: 
     """
     Strips the strips the full filepath down to just the filename and filetype
     
@@ -8,7 +8,6 @@ def strip_and_split_filepath (filepath):
     Returns the filename and filetype
     
     """
-    
     
     print("trying to strip and split filepath")
     print(filepath)
