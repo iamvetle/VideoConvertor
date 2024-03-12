@@ -29,6 +29,8 @@ def change_res(input, res):
             resized_clip.write_videofile(output, codec="libx264")   
         elif input_filetype == "avi":
             resized_clip.write_videofile(output, codec="png")
+        elif input_filetype == "ogv":
+            resized_clip.write_videofile(output, code="libvorbis")
         else:
             resized_clip.write_videofile(output)         
 
