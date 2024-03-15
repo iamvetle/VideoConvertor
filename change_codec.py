@@ -20,7 +20,7 @@ def change_codec(input, output):
         
         if input_filetype == output_filetype:
             print("The videoformat is the same, no changes made") 
-            exit()
+            return
         # Construct the ffmpeg command with arguments
         ffmpeg.input(input).output(output).run()
         
@@ -29,4 +29,4 @@ def change_codec(input, output):
         # Execute the ffmpeg command using subprocess
     except Exception as e:
         print(f"An error occured while trying to convert the file\n", e)
-        exit()
+        return

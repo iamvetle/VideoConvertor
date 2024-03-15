@@ -1,3 +1,5 @@
+import os
+
 def strip_and_split_filepath (filepath: str) -> tuple[str, str]: 
     """
     Strips the strips the full filepath down to just the filename and filetype
@@ -13,11 +15,17 @@ def strip_and_split_filepath (filepath: str) -> tuple[str, str]:
     print(filepath)
     
     try:
-        filename = (filepath.split(".")[-2]).split("\\")[0].lower()        
+        # filename = (filepath.split(".")[-2]).split("\\")[0].lower()        
+
+        filename = os.path.basename(filepath).split(".")[-2]
+        filetype = os.path.basename(filepath).split(".")[-1].lower()
         
-        print("filename", filename)
+        
+        # print("filename", filename)
         filetype = filepath.split(".")[-1].lower()
-        print("filetype", filetype)
+
+        # filetype = os.path.
+        # print("filetype", filetype)
         
         return (filename, filetype)
     except Exception as e:

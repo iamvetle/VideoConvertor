@@ -20,7 +20,7 @@ def change_res(input, output, res):
     
     if not res:
         print("No resolution specified")
-        exit()
+        return
     try:
         
         input_filename, input_filetype = strip_and_split_filepath(input)
@@ -35,27 +35,30 @@ def change_res(input, output, res):
         print(output_filename)
 
         # The video object
-        clip = VideoFileClip(input)
+        
+        with VideoFileClip(input) as clip:
 
-        # Resizing
-        resized_clip = clip.resize(res)
+            # Resizing
+            resized_clip = clip.resize(res)
 
 
-        # Write to file based on video format
-        if input_filetype == "mov":
-            resized_clip.write_videofile(output_file, codec="libx264")
-        elif input_filetype == "avi":
-            resized_clip.write_videofile(output_file, codec="png")
-        elif input_filetype == "ogv":
-            resized_clip.write_videofile(output_file, codec="libvorbis")
-        elif input_filetype == "webm":
-            resized_clip.write_videofile(output_file, codec="libvpx")
-        else:
-            resized_clip.write_videofile(output_file)
+            # Write to file based on video format
+            if input_filetype == "mov":
+                resized_clip.write_videofile(output_file, codec="libx264")
+            elif input_filetype == "avi":
+                resized_clip.write_videofile(output_file, codec="png")
+            elif input_filetype == "ogv":
+                resized_clip.write_videofile(output_file, codec="libvorbis")
+            elif input_filetype == "webm":
+                resized_clip.write_videofile(output_file, codec="libvpx")
+            else:
+                resized_clip.write_videofile(output_file)
 
-        print(f"{input_filename} resized to {res[1]}p")
-        return output_file
+            print(f"{input_filename} resized to {res[1]}p")
+
+            clip.close()
+            return output_file
 
     except Exception as e:
         print("An error eccured while trying to change resolution:", e)
-        exit()
+        return

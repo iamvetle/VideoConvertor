@@ -6,18 +6,19 @@ from change_res import change_res
 
 from strip_and_split_filepath import strip_and_split_filepath
 
+valid_options = [
+    ["480", (480, 640)],
+    ["720", (720, 1280)],
+    ["1080", (1080, 1920)],
+    ["2160", (2160, 3840)],
+    ["4k", (2160, 3840)],
+    ["4320", (4320, 7680)],
+    ["8k", (4320, 7680)],
+]
+
 
 # The resolution options
 def resolution_options(value):
-    valid_options = [
-        ["480", (640, 480)],
-        ["720", (1280, 720)],
-        ["1080", (1920, 1080)],
-        ["2160", (3840, 2160)],
-        ["4k", (3840, 2160)],
-        ["4320", (7680, 4320)],
-        ["8k", (7680, 4320)],
-    ]
 
     for option in valid_options:
         if value == option[0]:
@@ -36,7 +37,11 @@ def main():
     # Files to process
     parser.add_argument("filepaths", nargs="*", help="Path to the file(s) to process.")
     parser.add_argument(
-        "-o", "--output", type=str, required=False, help="The output file to convert to."
+        "-o",
+        "--output",
+        type=str,
+        required=False,
+        help="The output file to convert to.",
     )
     parser.add_argument(
         "-format",
@@ -70,27 +75,24 @@ def main():
             # The output file path. Example: spiderman.mp4
 
             # Output cannot be specified when multiple files are selected
-            if num_of_files > 1 and output:
+            if num_of_files > 1 and isinstance(output, str):
                 raise ValueError(
                     "Output filename cannot be specified when multiple files are selected"
                 )
 
             if num_of_files > 1 and not videoformat:
-                raise ValueError("Videoformat must be specified when multiple files are selected")
 
-            if num_of_files > 1 and videoformat and not output:
-                input_filename, _ = strip_and_split_filepath(filepath)
+                videoformat = "mov"
 
+                # raise ValueError("Videoformat must be specified when multiple files are selected")
+
+            input_filename, _ = strip_and_split_filepath(filepath)
+
+            if not output:
                 if not chosen_res:
                     output = f"{input_filename}_copy.{videoformat}"
                 else:
                     output = f"{input_filename}_copy{chosen_res}p.{videoformat}"
-
-            if not output and not num_of_files > 1:
-                raise ValueError("Output filename must be specified when only one file is selected")
-
-
-
 
             input_file = filepath
 
@@ -102,8 +104,7 @@ def main():
             change_codec(input_file, output)
 
         except Exception as e:
-            print(e)
-            exit()
+            print("Exception occured:", e)
 
 
 if __name__ == "__main__":
