@@ -1,34 +1,24 @@
 import argparse
 
 # Local
-from change_codec import change_codec
-from change_res import change_res
+from utils.change_codec import change_codec
+from utils.change_res import change_res
 
-from strip_and_split_filepath import strip_and_split_filepath
+from utils.strip_and_split_filepath import strip_and_split_filepath
 
-valid_options = [
-    ["480", (480, 640)],
-    ["720", (720, 1280)],
-    ["1080", (1080, 1920)],
-    ["2160", (2160, 3840)],
-    ["4k", (2160, 3840)],
-    ["4320", (4320, 7680)],
-    ["8k", (4320, 7680)],
-]
+import os
 
+# valid_options = [
+#     ["480p", (480, 640)],
+#     ["720p", (720, 1280)],
+#     ["1080p", (1080, 1920)],
+#     ["2160p", (2160, 3840)],
+#     ["4k", (2160, 3840)],
+#     ["4320p", (4320, 7680)],
+#     ["8k", (4320, 7680)],
+# ]
 
-# The resolution options
-def resolution_options(value):
-
-    for option in valid_options:
-        if value == option[0]:
-            return option[1]
-    raise ValueError("None of the resolution options were specified")
-
-
-format_choices = ("mp4", "avi", "mkv", "webm", "mov ")
-
-res_choices = ("480", "720", "1080", "2160", "4k", "4320", "8k")
+format_choices = ("mp4", "mov", "avi", "mkv", "webm", "ogv")
 
 
 def main():
@@ -53,55 +43,68 @@ def main():
     parser.add_argument(
         "-r",
         "--resolution",
-        choices=res_choices,
-        help="Choose a resolution to resize to",
+        nargs=2,
+        # type=list,
+        help="Choose a (two) resolution to resize to",
     )
 
     # All the arguments
     args = parser.parse_args()
 
     filepaths: list[str] = args.filepaths
-    chosen_res = args.resolution
-    videoformat = args.videoformat
-    output = args.output
+    resolution: list[str] | None = args.resolution
+    videoformat: str | None = args.videoformat
+    output: str | None = args.output
 
-    if chosen_res:
-        res = resolution_options(chosen_res)
+    print(resolution)
+
+    if resolution:
+        if len(resolution) > 2 or len(resolution) == 1:
+            raise ValueError(
+                "There has to be two define resolutions. Example: -r 1920 1080"
+            )
 
     num_of_files = len(filepaths)
 
+    # Output cannot be specified when multiple files are selected
+    if num_of_files > 1 and output:
+        raise ValueError(
+            "Output filename cannot be specified when multiple files are selected"
+        )
+
+    # A fileformat must be specified when the num of files are over 1
+    if num_of_files > 1 and not videoformat:
+        raise ValueError(
+            "Videoformat must be specified when multiple files are selected"
+        )
+
     for filepath in filepaths:
         try:
-            # The output file path. Example: spiderman.mp4
-
-            # Output cannot be specified when multiple files are selected
-            if num_of_files > 1 and isinstance(output, str):
-                raise ValueError(
-                    "Output filename cannot be specified when multiple files are selected"
-                )
-
-            if num_of_files > 1 and not videoformat:
-
-                videoformat = "mov"
-
-                # raise ValueError("Videoformat must be specified when multiple files are selected")
-
-            input_filename, _ = strip_and_split_filepath(filepath)
+            input_filename, input_filetype = strip_and_split_filepath(filepath)
 
             if not output:
-                if not chosen_res:
-                    output = f"{input_filename}_copy.{videoformat}"
+                print("There is no ouput name so making just a copy name")
+                if resolution:
+                    output = f"{input_filename}_copy{resolution[0]}{resolution[1]}p.{input_filetype}"
                 else:
-                    output = f"{input_filename}_copy{chosen_res}p.{videoformat}"
+                    output = f"{input_filename}_copy.{videoformat}"
+
+            _, output_filetype = strip_and_split_filepath(output)
 
             input_file = filepath
 
             # Resize if a resolution has been set
-            if chosen_res:
-                resized_file = change_res(filepath, output, res)
-                input_file = resized_file
+            if resolution:
+                input_file = change_res(filepath, output, resolution)
 
-            change_codec(input_file, output)
+            # Change codec if the filetype is not the same for the input and output
+            if input_filetype != output_filetype:
+                if filepath != input_file:
+                    status = change_codec(input_file, output)
+                    if status == True:
+                        os.remove(input_file)
+                else:
+                    change_codec(input_file, output)
 
         except Exception as e:
             print("Exception occured:", e)

@@ -1,7 +1,7 @@
 import ffmpeg
 
 # Local
-from strip_and_split_filepath import strip_and_split_filepath
+from utils.strip_and_split_filepath import strip_and_split_filepath
 
 
 def change_codec(input, output):
@@ -20,13 +20,15 @@ def change_codec(input, output):
         
         if input_filetype == output_filetype:
             print("The videoformat is the same, no changes made") 
-            return
+            return False
         # Construct the ffmpeg command with arguments
         ffmpeg.input(input).output(output).run()
         
         print(f"Successfully converted the file to .{output_filetype}")
 
+        return True
+
         # Execute the ffmpeg command using subprocess
     except Exception as e:
         print(f"An error occured while trying to convert the file\n", e)
-        return
+        return False

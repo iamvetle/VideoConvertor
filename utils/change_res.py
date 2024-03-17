@@ -1,8 +1,9 @@
 from moviepy.editor import VideoFileClip
+import os
 
 # Local
 
-from strip_and_split_filepath import strip_and_split_filepath
+from utils.strip_and_split_filepath import strip_and_split_filepath
 
 def change_res(input, output, res):
     """
@@ -28,9 +29,13 @@ def change_res(input, output, res):
         print(input_filename)
         print(input_filetype)
         
-        output_filename, _ = strip_and_split_filepath(output)
+        output_filename, output_filetype = strip_and_split_filepath(output)
         
-        output_file = f"{output_filename}resized_to_{res[1]}.{input_filetype}"
+        output_file = output
+
+        
+        if output_filetype != input_filetype:
+            output_file = f"{output_filename}resized_to_{res[1]}.{input_filetype}"
         
         print(output_filename)
 
