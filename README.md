@@ -11,8 +11,8 @@ This Python script can change the resolution and change the format of one or mor
 ### Installation
 
 1. Clone or download the repository to your local machine:
-``` bash
-git clone https://github.com/[iamvetle]/[VideoConvertor]
+```bash
+git clone https://github.com/iamvetle/VideoConvertor
 ```
 2. Ensure you have the required Python dependencies installed by running:
 ```bash
