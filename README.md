@@ -1,6 +1,6 @@
 # Video Resolution and Format Converter
 
-This Python script can reduce the resolution of one or more video files and change their video format. It provides a command-line interface for easy usage.
+This Python script can change the resolution and change the format of one or more video files.
 
 ## Prerequisites
 
@@ -10,7 +10,10 @@ This Python script can reduce the resolution of one or more video files and chan
 
 ### Installation
 
-1. Clone or download the repository to your local machine.
+1. Clone or download the repository to your local machine:
+``` bash
+git clone https://github.com/[iamvetle]/[VideoConvertor]
+```
 2. Ensure you have the required Python dependencies installed by running:
    ```bash
    pip install -r requirements.txt
@@ -23,7 +26,18 @@ This Python script can reduce the resolution of one or more video files and chan
 - `-format, --videoformat`: The format to use. Available choices are mp4, mov, avi, mkv, webm, and ogv.
 - `-r, --resolution`: Choose a (two) resolution to resize to. Example: `-r 1920 1080`
 
+
+- FILES: One or more paths to the video files you want to process.
+- `-o, --output` OUTPUT_FILE: (Optional) The name of the output file to create. If not specified, the output file will have a modified name based on the original file and applied changes.
+- `-format, --videoformat` VIDEOFORMAT: (Optional) The desired output video format. Supported formats: mp4, mov, avi, mkv, webm, ogv. **Required** when processing multiple files.
+- `-r, --resolution` RESOLUTION_WIDTH RESOLUTION_HEIGHT: (Optional) The desired output resolution in the format width height (e.g., 1280 720 for 720p).
+
+
 ### Example Usage
+
+``` bash
+python main.py [-o OUTPUT_FILE] [-format VIDEOFORMAT] [-r RESOLUTION_WIDTH RESOLUTION_HEIGHT] FILES
+```
 
 #### Single File Conversion
 
@@ -44,7 +58,13 @@ python video_converter.py path/to/input_video1.mp4 path/to/input_video2.mov -r 1
 ## Notes
 
 - If you provide a resolution, ensure it is in the format: `-r width height`.
-- Output filename will be automatically generated for multiple files based on the input filename and chosen resolution.
+
+- When processing multiple files:
+    - The -o option cannot be used. Output filenames will be generated based on the original filenames and applied changes.
+    - The -format option is required.
+- When processing a single file with only a change in format:
+    - The -format option is not needed, as the format will be inferred from the output filename.
+
 
 ## License
 
